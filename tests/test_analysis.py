@@ -1,8 +1,11 @@
 """Stage 3 units: reading order and term mining. No LLM anywhere here."""
 
-from tsumugi.analysis.scenegraph import reading_order
+from pathlib import Path
+
+from tsumugi.analysis.scenegraph import reading_order, units_in_reading_order
 from tsumugi.analysis.terms import mine_terms
 from tsumugi.core.models import SceneNode, ScriptGraph, TextUnit, UnitKind
+from tsumugi.core.store import ProjectStore
 
 
 def _unit(text: str, speaker: str | None = None, n: int = 0) -> TextUnit:
@@ -38,6 +41,26 @@ def test_reading_order_keeps_unreachable_files() -> None:
     )
     ordered = reading_order(graph)
     assert {n.file for n, _ in ordered} == {"a.scn", "orphan.scn"}
+
+
+def test_units_follow_graph_order_not_file_order(tmp_path: Path) -> None:
+    # Store order is file/ordinal (a_middle before z_intro); the graph says
+    # z_intro is read first. Uncovered files (system.ks) go last, kept.
+    def u(file: str, n: int) -> TextUnit:
+        return _unit(f"{file}{n}", n=n).model_copy(update={"id": f"{file}:{n}", "file": file})
+
+    store = ProjectStore(tmp_path / "p.tsumugi")
+    store.replace_units(
+        [u("a_middle.scn", 1), u("system.ks", 1), u("z_intro.scn", 2), u("z_intro.scn", 1)]
+    )
+    store.replace_scenes(
+        [("z_intro.scn", "*s", None, 0, "[]"), ("a_middle.scn", "*m", None, 1, "[]")]
+    )
+    stored = [r.unit for r in store.units(limit=10).rows]
+    ordered = units_in_reading_order(stored, store.file_order())
+    got = [x.id for x in ordered]
+    assert got == ["z_intro.scn:1", "z_intro.scn:2", "a_middle.scn:1", "system.ks:1"], got
+    store.close()
 
 
 def test_mine_terms_ranks_and_tags() -> None:

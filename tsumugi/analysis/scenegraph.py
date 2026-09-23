@@ -6,7 +6,17 @@ from __future__ import annotations
 
 from collections import deque
 
-from tsumugi.core.models import SceneNode, ScriptGraph
+from tsumugi.core.models import SceneNode, ScriptGraph, TextUnit
+
+
+def units_in_reading_order(
+    units: list[TextUnit], file_order: dict[str, int]
+) -> list[TextUnit]:
+    """Units sorted by their file's reading-order index, then ordinal.
+    Files the graph doesn't cover go last in file-name order — kept, never
+    dropped (same rule as unreachable scenes below)."""
+    last = len(file_order)
+    return sorted(units, key=lambda u: (file_order.get(u.file, last), u.file, u.ordinal))
 
 
 def _storage_to_file(storage: str, files: set[str]) -> str | None:

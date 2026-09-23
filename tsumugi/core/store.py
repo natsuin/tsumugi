@@ -209,6 +209,15 @@ class ProjectStore:
                 rows,
             )
 
+    def file_order(self) -> dict[str, int]:
+        """file -> reading-order index from the Stage 3 scene graph. Empty
+        until `analyze` has run, or for an engine with no graph yet."""
+        rows = self._db.execute(
+            "SELECT file, MIN(order_index) AS oi FROM scenes "
+            "WHERE order_index IS NOT NULL GROUP BY file"
+        ).fetchall()
+        return {str(r["file"]): int(r["oi"]) for r in rows}
+
     def replace_terms(self, rows: list[tuple[str, int, str, str]]) -> None:
         """(term, count, kind, sample) rows."""
         with self._db:

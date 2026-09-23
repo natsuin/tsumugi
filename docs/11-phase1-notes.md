@@ -186,10 +186,12 @@ file prefixes, and its cast are deliberately not named in this public repo.
 - **On the target:** `analyze` resolves 254 scenes across 226 files to a
   single entry scene and mines 3,293 term candidates. bible.map piloted on
   the locally installed 31B (the docs/04 "fits barely" row).
-- **Known simplification:** map windows currently run in store order
-  (file/ordinal), which matches reading order for this title's linear
-  chapter naming; joining `scenes.order_index` into the window ordering is
-  the correct general fix and is small.
+- **Map windows run in graph reading order.** `run_map` sorts units by
+  their file's `scenes.order_index` (`units_in_reading_order`), then
+  ordinal; files the graph doesn't cover go last in file-name order. With
+  no scene graph (analyze not run, or Ren'Py today) it falls back to file
+  order and says so. Where the two orders coincide (the Tier 3 title's
+  linear chapter naming), the windows and their cache keys are unchanged.
 
 ## Running it
 

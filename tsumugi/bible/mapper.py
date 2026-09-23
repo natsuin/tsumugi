@@ -16,6 +16,7 @@ import httpx
 
 from pydantic import BaseModel, Field
 
+from tsumugi.analysis.scenegraph import units_in_reading_order
 from tsumugi.core.models import TextUnit
 from tsumugi.core.store import ProjectStore
 from tsumugi.llm.client import LlmBinding, OllamaClient
@@ -83,9 +84,11 @@ def run_map(
     log: bool = True,
 ) -> tuple[int, int, int]:
     """Run bible.map over all units. Returns (done, cached, failed)."""
-    units = store.units(limit=1_000_000).rows
-    ordered = [r.unit for r in units]
-    wins = windows_in_order(ordered)
+    units = [r.unit for r in store.units(limit=1_000_000).rows]
+    file_order = store.file_order()
+    if log and not file_order:
+        print("note: no scene graph in the store (run `tsumugi analyze`); using file order")
+    wins = windows_in_order(units_in_reading_order(units, file_order))
     if limit is not None:
         wins = wins[:limit]
 
