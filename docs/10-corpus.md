@@ -96,6 +96,10 @@ The core is generic when it survives all four **without changes outside `tsumugi
 | **Compiled bytecode** | String-table rebuild, offset fixup — Gate B matters most here | Majiro, BGI/Ethornell |
 | **Managed runtime** | Text in assemblies/assets; injection via resource redirection | Unity |
 
+Engine ≠ runtime: a Unity game that runs its *own* script interpreter over an encrypted
+script file is **archive + text script**, not managed runtime — its text never touches
+Unity assets (`unitykag`, Tier 0 fixture + a local Tier 3 title, both gates pass 2026-09-22).
+
 Coverage inside a family is incremental work. Coverage of a *new* family is where the
 abstraction gets tested — so the adapter order is deliberately one per family first, breadth
 second.

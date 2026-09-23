@@ -54,6 +54,9 @@ class TextUnit(BaseModel):
     source_text: str
     placeholders: list[Placeholder] = Field(default_factory=list[Placeholder])
     speaker: str | None = None
+    # Voice file id when the engine ties one to the line: ground truth for
+    # Stage 3 voice->speaker mapping (masked "???" speakers included).
+    voice: str | None = None
     kind: UnitKind
     file: str
     offset: int

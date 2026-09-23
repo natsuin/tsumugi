@@ -34,6 +34,7 @@ Ordered by "what you'll actually encounter," with the honest difficulty rating.
 |---|---|---|---|---|
 | **Ren'Py** | `.rpa` | `.rpy` / `.rpyc` | ★☆☆☆☆ | Has a **built-in translation framework** (`tl/` trees). Injection is *supported by the engine*, not a hack. UTF-8 native, proportional fonts, no repack needed. |
 | **KiriKiri / KiriKiriZ** | `.xp3` | `.ks` (TJS2) | ★★☆☆☆ | The workhorse of doujin/commercial JP VNs. Text-ish scripts, well-documented, loose-file override support (`data/` beside the xp3) makes patching easy. |
+| **Unity-hosted KAG dialect** (`unitykag`) | none | `GameMaterial/*.dsm` | ★★☆☆☆ | A Unity shell running its own KAG-like interpreter. One scenario file: Base64 of AES-256-CBC (PBKDF2-SHA1 key from the widely-copied .NET sample code). Plaintext is one tag per line, text lines bare — no inline codes. Tag quoting is looser than KAG (`g=“x"`), so tag lines are never rewritten. Speaker/voice come from `[OnName]`/`[pv]` lines. No Unity asset tooling needed. |
 | **NScripter / ONScripter** | none | `nscript.dat` | ★★☆☆☆ | Trivial obfuscation (XOR 0x84). Old but huge back catalogue. SJIS-locked; needs font work. |
 | **TyranoScript** | loose | `.ks` + JS | ★★☆☆☆ | HTML5. Basically editable in a text editor. |
 | **RPG Maker MV/MZ** | loose | JSON | ★★☆☆☆ | Not a VN engine but a lot of VN-adjacent games. JSON is easy; the hard part is classification (tons of non-dialogue strings). |
